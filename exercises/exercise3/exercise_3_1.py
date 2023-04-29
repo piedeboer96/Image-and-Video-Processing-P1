@@ -21,11 +21,13 @@ X, Y = np.meshgrid(x,y)
 #   f(x,y) = sin(2*pi*x/lambda)
 wavelength = 0.5  
 amplitude = 1.0 
-output = amplitidue * np.sin(2*np.pi*Y/wavelength)
+output = amplitude * np.sin(2*np.pi*Y/wavelength)
 
 # plot
 #plt.imshow(output)
 #plt.show()
+
+print(output.shape)
 
 # Plot the sine pattern
 plt.imshow(output, cmap='gray')
