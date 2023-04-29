@@ -1,0 +1,92 @@
+Recourses & Motivation
+
+Exercise 1
+
+(1.1)
+    Starter code for spliting channels and nicely dipslaying it
+        - https://www.codespeedy.com/splitting-rgb-and-hsv-values-in-an-image-using-opencv-python/ 
+    Understanding how the different color models work 
+        - slides of lecture 1 about color models (RBG, HSV)
+    Starter code matplotlib for subplot
+        - https://www.geeksforgeeks.org/how-to-display-multiple-images-in-one-figure-correctly-in-matplotlib/
+    Color maps in matplotlib   
+        - https://matplotlib.org/stable/tutorials/colors/colormaps.html
+
+(1.2)
+    OpenCV documentation on histogram equalization
+        - https://docs.opencv.org/3.4/d4/d1b/tutorial_histogram_equalization.html
+    Splitting and merging channels 
+        - https://pyimagesearch.com/2021/01/23/splitting-and-merging-channels-with-opencv/
+    Build some more intuition about HSV equalization   
+        - https://rawpedia.rawtherapee.com/HSV_Equalizer
+    Plotting the histograms 
+        - https://docs.opencv.org/3.4/d1/db7/tutorial_py_histogram_begins.html
+    RGB and HSV histograms
+        - https://linuxtut.com/en/ff4a07d73e14385b6922/
+    Histogram of different color channels using build in OpenCV
+        - https://www.tutorialspoint.com/how-to-plot-histograms-of-different-colors-of-an-image-in-opencv-python
+
+
+(1.3)
+
+    Further intuition on why to equalize the V channel in HSV
+        - https://staff.fnwi.uva.nl/r.vandenboomgaard/ComputerVision/LectureNotes/IP/PointOperators/HistogramEqualization.html
+    Applying equalization on all HSV channels might give strange results
+        - https://nl.mathworks.com/matlabcentral/answers/251172-can-we-apply-histogram-equalization-on-the-hsv-image
+    More on working with HSV channels
+        - https://machinelearningknowledge.ai/split-and-merge-image-color-space-channels-in-opencv-and-numpy/?utm_content=cmp-true
+    Paper on histogram equalization in HSV space
+        - http://pep.ijieee.org.in/journal_pdf/11-374-150003360112-14.pdf
+
+Exercise 2
+
+(2.1)
+
+    edge detection, convolution 
+        - https://homepages.inf.ed.ac.uk/rbf/HIPR2/linedet.htm
+    how to apply kernels with opencv
+        - https://docs.opencv.org/3.4/d4/dbd/tutorial_filter_2d.html
+    tresholding/binarize 
+        - https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html
+    how to apply binary tresholding
+        - https://pyimagesearch.com/2021/04/28/opencv-thresholding-cv2-threshold/
+
+(2.2)
+
+    salt and peper noise mask approach
+        - https://stackoverflow.com/questions/54633038/how-to-add-masking-noise-to-numpy-2-d-matrix-in-a-vectorized-manner
+    median filter
+        - https://homepages.inf.ed.ac.uk/rbf/HIPR2/median.htm
+    median filter very effective for removing 'salt and pepper' while preserving edges
+        - https://www.cs.auckland.ac.nz/courss/compsci373s1c/PatricesLectures/Image%20Filtering.pdf
+    median fitlering using OpenCV
+        - https://medium.com/@florestony5454/median-filtering-with-python-and-opencv-2bce390be0d1
+    
+
+(2.3)
+
+    wiener filter gives good results for gaussian noise:
+        - https://www.computerscijournal.org/vol10no1/noise-removal-and-filtering-techniques-used-in-medical-images/#:~:text=Weiner%20filter%20gives%20best%20results,for%20Gaussian%20and%20Speckle%20Noise
+    wiener filter starter code in python from researchgate
+        - https://www.researchgate.net/figure/Wiener-Filter-implementation-using-Python_fig3_332574579
+    gaussian filtering
+        - https://www.cs.auckland.ac.nz/courses/compsci373s1c/PatricesLectures/Gaussian%20Filtering_1up.pdf
+    overview of imagge noise removal techniques
+        - http://www.warse.org/IJSAIT/static/pdf/file/ijsait01862019.pdf
+    wiener filter for gaussian noise 
+        - https://www.researchgate.net/figure/Images-added-Gaussian-noise_fig8_332574579
+
+Exercise 3
+
+(3.1)
+
+    starting code for working with python meshgrid 
+        - https://thepythoncodingbook.com/2022/05/28/numpy-meshgrid/
+
+        
+
+
+        
+    
+
+    
