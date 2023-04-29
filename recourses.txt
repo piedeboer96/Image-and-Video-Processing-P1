@@ -83,6 +83,11 @@ Exercise 3
     starting code for working with python meshgrid 
         - https://thepythoncodingbook.com/2022/05/28/numpy-meshgrid/
 
+(3.2)
+
+    Fourier Transform in openCV
+        - https://docs.opencv.org/3.4/de/dbc/tutorial_py_fourier_transform.html
+
         
 
 

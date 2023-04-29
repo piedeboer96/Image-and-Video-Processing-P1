@@ -20,7 +20,8 @@ X, Y = np.meshgrid(x,y)
 # build the 2D sine, adjusting X and Y in output, controls orientation
 #   f(x,y) = sin(2*pi*x/lambda)
 wavelength = 0.5  
-output = np.sin(2*np.pi*Y/wavelength)
+amplitude = 1.0 
+output = amplitidue * np.sin(2*np.pi*Y/wavelength)
 
 # plot
 #plt.imshow(output)
