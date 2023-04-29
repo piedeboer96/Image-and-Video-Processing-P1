@@ -108,9 +108,24 @@ Exercise 3
         - https://www.dsi.unive.it/~bergamasco/teachingfiles/cvslides/5_filtering_in_frequency_domain.pdf
     why circular mask 'notch' filter  
         - https://dsp.stackexchange.com/questions/61184/why-is-a-circular-mask-appropriate-for-fourier-filtering-rectangular-images
+    removing periodic noise in the fourier domain openCV , C++
+        - https://docs.opencv.org/4.x/d2/d0b/tutorial_periodic_noise_removing_filter.html\
+
+(3.5)
+
+
+
+Exercise 4
+
+(4.1)   
+
+    k-means using openCV (starter code) 
+        - https://docs.opencv.org/3.4/d1/d5c/tutorial_py_kmeans_opencv.html
 
     
-    
+(4.2)
 
+    polar mapping
+        - https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#ga49481ab24fdaa0ffa4d3e63d14c0d5e4
 
     

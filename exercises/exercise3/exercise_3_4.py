@@ -65,13 +65,13 @@ def add_periodic_noise(img, amplitude=1.5, frequency=33):
 # load image
 img = cv.imread('images/birdie.jpg')
 
-
-
 # frequency for noise and filter
 freq = 30
+amplitude = 10
+radius = 10
 
 # add noise to the image
-img_noisy = add_periodic_noise(img, 20, freq)
+img_noisy = add_periodic_noise(img, amplitude, freq)
 
 # get magnitude spectrum of noisy image
 f = np.fft.fft2(img_noisy)
@@ -91,7 +91,8 @@ magnitude_spectrum_filtered_img = 20*np.log(np.abs(fshift))
 #
 #   Create a frequency domain filter to remove the periodic noise from the previous question’s noisy image. Display and discuss: 
 #   (1) the de-noising filter’s FT magnitude in 1D and 2D, 
-#   (2) the de-noised image’s FT magnitude in 1D and 2D, (3) the resulting de-noised image.
+#   (2) the de-noised image’s FT magnitude in 1D and 2D, 
+#   (3) the resulting de-noised image.
 #
 #
 
