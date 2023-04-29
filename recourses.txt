@@ -94,8 +94,23 @@ Exercise 3
         - https://www.donike.net/frequency-domain-of-images-fourier-transform-and-filtering/
     frequency domain filtering
         - https://eecs.wsu.edu/~cs445/Lecture_11.pdf
+  
 
-            
+(3.4)
+
+    FIR filters for usage in image processing
+        - http://www.eecs.umich.edu/courses/eecs206/archive/spring02/lab.dir/Lab6/lab6_v3_0_release.pdf
+    Why FIR are good for image processing
+        - http://www.ece.northwestern.edu/local-apps/matlabhelp/toolbox/images/linfilt9.html
+    chapter 4   
+        - gonzalez on selective fitlering
+    University Venezia slides on Filtering in the frequency domain
+        - https://www.dsi.unive.it/~bergamasco/teachingfiles/cvslides/5_filtering_in_frequency_domain.pdf
+    why circular mask 'notch' filter  
+        - https://dsp.stackexchange.com/questions/61184/why-is-a-circular-mask-appropriate-for-fourier-filtering-rectangular-images
+
     
+    
+
 
     
