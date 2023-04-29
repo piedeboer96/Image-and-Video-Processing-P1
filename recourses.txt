@@ -88,10 +88,14 @@ Exercise 3
     Fourier Transform in openCV
         - https://docs.opencv.org/3.4/de/dbc/tutorial_py_fourier_transform.html
 
-        
+(3.3)
 
+    how to add periodic noise to images 
+        - https://www.donike.net/frequency-domain-of-images-fourier-transform-and-filtering/
+    frequency domain filtering
+        - https://eecs.wsu.edu/~cs445/Lecture_11.pdf
 
-        
+            
     
 
     

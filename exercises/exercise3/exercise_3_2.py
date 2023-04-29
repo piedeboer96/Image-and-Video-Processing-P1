@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load image
-img = cv.imread('images/birdie.jpg', cv.IMREAD_GRAYSCALE)
+img = cv.imread('images/birdie.jpg')
 
 """ code for 2d sine meshgrid """
 
@@ -31,7 +31,6 @@ magnitude_spectrum = 20*np.log(np.abs(fshift))
 
 print(magnitude_spectrum.shape)
 
-
 # get 1D slices
 middle_row = magnitude_spectrum[magnitude_spectrum.shape[0] // 2, :]
 middle_column = magnitude_spectrum[:, magnitude_spectrum.shape[1] // 2]
@@ -56,8 +55,6 @@ plt.ylabel('Magnitude')
 
 plt.tight_layout()
 plt.show()
-
-
 
 # TODO:
 #   change x-axis to frequency 
