@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 """
         - Salt and pepper method
         - Median Filter
-        - Kernels 45-deg and 135-deg
+        - Kernels 45-deg and 135-deg from lab
         - Median Filter
 """
 
@@ -25,12 +25,11 @@ def add_salt_and_pepper(img, prob):
 
     return image_noisy
 
+# diagonal 45
+diag_45 = np.array([[2, 1, 0], [1, 0, -1], [0, -1, -2]])
 
-# 1st order 45-degree edge detection kernel (prewitt)
-prewitt_45 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
-
-# 1st order 135-degree edge detection kernel (prewitt)
-prewitt_135 = np.array([[-1,-1,0],[-1,0,1],[0,1,1]])
+# clockwise rotate it 90 degree
+diag_135 = np.rot90(diag_45, 1)
 
 ##############################
 
@@ -41,8 +40,8 @@ img = cv.imread('images/diag2.jpg', cv.COLOR_BGR2GRAY)
 img_noisy = add_salt_and_pepper(img, 0.5)
 
 # apply the different kernels using filter2D
-img_noisy_45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=prewitt_45)
-img_noisy_135 = cv.filter2D(src=img_noisy, ddepth=-1,kernel=prewitt_135)
+img_noisy_45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=diag_45)
+img_noisy_135 = cv.filter2D(src=img_noisy, ddepth=-1,kernel=diag_135)
 
 # plot original image
 plt.subplot(2, 2, 1); plt.imshow(img); plt.title('Original Image'); plt.axis('off')
@@ -64,8 +63,8 @@ plt.show()
 img_filter = cv.medianBlur(img_noisy, 5)
 
 # apply the different edge detection kernels to the median filtered noisy images
-img_filter_45 = cv.filter2D(src=img_filter,ddepth=-1,kernel=prewitt_45)
-img_filter_135 = cv.filter2D(src=img_filter,ddepth=-1,kernel=prewitt_135)
+img_filter_45 = cv.filter2D(src=img_filter,ddepth=-1,kernel=diag_45)
+img_filter_135 = cv.filter2D(src=img_filter,ddepth=-1,kernel=diag_135)
 
 # plot the result
 plt.subplot(2, 2, 1); plt.imshow(img_noisy); plt.title('Noisy Image'); plt.axis('off')

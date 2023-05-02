@@ -2,7 +2,6 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 # load image
 img = cv.imread('images/birdie.jpg', cv.COLOR_BGR2GRAY)
 
@@ -42,7 +41,6 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(X, Y, output, cmap='gray')
 ax.set_title('Meshgrid in 3D')
 plt.show()
-
 
 
 # (code from the guy...)

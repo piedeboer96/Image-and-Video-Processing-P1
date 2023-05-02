@@ -55,9 +55,17 @@ def gaussian_kernel(kernel_size=3):
 
     return kernel_2d
 
+# fastnldmean
+
 # edge detection kerels
-prewitt_45 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
-prewitt_135 = np.array([[-1,-1,0],[-1,0,1],[0,1,1]])
+# prewitt_45 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
+# prewitt_135 = np.array([[-1,-1,0],[-1,0,1],[0,1,1]])
+
+# this one is taken from the labs
+diag_45 = np.array([[2, 1, 0], [1, 0, -1], [0, -1, -2]])
+
+# clockwise rotate it 90 degree
+diag_135 = np.rot90(diag_45, 1)
 
 # load iamge
 img = cv.imread('images/beach.jpg', cv.COLOR_BGR2GRAY) 
@@ -67,15 +75,19 @@ print('type of the gray loaded image... ', type(img))
 # add gaussian noise
 img_noisy = add_gaussian_noise(img,0, 10)
 
+
 # apply edge detection 45-deg kernel to noisy image
-img_noisy_prewitt45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=prewitt_45)
+img_noisy_prewitt45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=diag_45)
 
 # apply wiener filter
-kernel = gaussian_kernel()
-img_wiener = wiener_filter(img_noisy,kernel,10)
+# kernel = gaussian_kernel()
+# img_wiener = wiener_filter(img_noisy,kernel,10)
+
+# img cleaned
+img_cleaned = cv.fastNlMeansDenoising(img_noisy_prewitt45)
 
 # apply edge-detection
-img_wiener_prewitt45 = cv.filter2D(src=img_wiener,ddepth=-1,kernel=prewitt_45)
+img_wiener_prewitt45 = cv.filter2D(src=img_cleaned,ddepth=-1,kernel=diag_45)
 
 # Plot original image
 plt.subplot(2, 3, 1)
@@ -85,23 +97,23 @@ plt.axis('off')
 
 # Plot noisy image
 plt.subplot(2, 3, 2)
-plt.imshow(img_noisy, cmap='gray')
+plt.imshow(img_noisy)
 plt.title('Image with Gaussian Noise')
 plt.axis('off')
 
 # Plot noisy image with edge detection kernel 45-deg applied
 plt.subplot(2, 3, 3)
-plt.imshow(img_noisy_prewitt45,cmap='gray')
+plt.imshow(img_noisy_prewitt45)
 plt.title('Noisy Image Prewitt 45-deg')
 plt.axis('off')
 
 plt.subplot(2, 3, 4)
-plt.imshow(img_wiener,cmap='gray')
-plt.title('Wiener Filter Image')
+plt.imshow(img_cleaned)
+plt.title('Cleaned Filter Image')
 plt.axis('off')
 
 plt.subplot(2, 3, 5)
-plt.imshow(img_wiener_prewitt45,cmap='gray')
+plt.imshow(img_wiener_prewitt45)
 plt.title('Wiener Filter Edge detection')
 plt.axis('off')
 

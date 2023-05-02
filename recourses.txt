@@ -100,6 +100,7 @@ Exercise 3
 
     FIR filters for usage in image processing
         - http://www.eecs.umich.edu/courses/eecs206/archive/spring02/lab.dir/Lab6/lab6_v3_0_release.pdf
+        
     Why FIR are good for image processing
         - http://www.ece.northwestern.edu/local-apps/matlabhelp/toolbox/images/linfilt9.html
     chapter 4   
