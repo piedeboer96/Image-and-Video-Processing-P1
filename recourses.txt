@@ -128,5 +128,9 @@ Exercise 4
 
     polar mapping
         - https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#ga49481ab24fdaa0ffa4d3e63d14c0d5e4
+    polar coordinates 
+        - https://en.wikipedia.org/wiki/Polar_coordinate_system
+
+    
 
     

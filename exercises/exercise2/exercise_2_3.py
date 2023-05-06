@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 from scipy.fft import fft2, ifft2
 from scipy.ndimage import gaussian_filter
 
+# TODO:
+#   gaussian filter
+#   wiener filter
+#       >> explain the sensitivity to noise of the edge detection kernel
+
 
 def add_gaussian_noise(img, mean, stdev):
 
@@ -57,10 +62,6 @@ def gaussian_kernel(kernel_size=3):
 
 # fastnldmean
 
-# edge detection kerels
-# prewitt_45 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
-# prewitt_135 = np.array([[-1,-1,0],[-1,0,1],[0,1,1]])
-
 # this one is taken from the labs
 diag_45 = np.array([[2, 1, 0], [1, 0, -1], [0, -1, -2]])
 
@@ -68,23 +69,20 @@ diag_45 = np.array([[2, 1, 0], [1, 0, -1], [0, -1, -2]])
 diag_135 = np.rot90(diag_45, 1)
 
 # load iamge
-img = cv.imread('images/beach.jpg', cv.COLOR_BGR2GRAY) 
-
-print('type of the gray loaded image... ', type(img))
+img = cv.imread('images/diag2.jpg', cv.COLOR_BGR2GRAY) 
 
 # add gaussian noise
-img_noisy = add_gaussian_noise(img,0, 10)
-
+img_noisy = add_gaussian_noise(img, 0, 10)
 
 # apply edge detection 45-deg kernel to noisy image
-img_noisy_prewitt45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=diag_45)
+img_noisy_diag_45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=diag_45)
 
 # apply wiener filter
 # kernel = gaussian_kernel()
 # img_wiener = wiener_filter(img_noisy,kernel,10)
 
 # img cleaned
-img_cleaned = cv.fastNlMeansDenoising(img_noisy_prewitt45)
+img_cleaned = cv.fastNlMeansDenoising(img_noisy_diag_45)
 
 # apply edge-detection
 img_wiener_prewitt45 = cv.filter2D(src=img_cleaned,ddepth=-1,kernel=diag_45)
@@ -103,8 +101,8 @@ plt.axis('off')
 
 # Plot noisy image with edge detection kernel 45-deg applied
 plt.subplot(2, 3, 3)
-plt.imshow(img_noisy_prewitt45)
-plt.title('Noisy Image Prewitt 45-deg')
+plt.imshow(img_noisy_diag_45)
+plt.title('Noisy Image Edge 45-deg')
 plt.axis('off')
 
 plt.subplot(2, 3, 4)

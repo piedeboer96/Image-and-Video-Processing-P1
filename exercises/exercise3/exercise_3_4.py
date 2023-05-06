@@ -4,71 +4,44 @@ import matplotlib.pyplot as plt
 import math
 from scipy import signal
 
-# TODO:
-#    
-#   
-#
+"""
+    Methods
+"""
 
-def butterworthNotchFilter(d0, points, n1, n2, n, visualize=False):
-    # Create a grid of frequency coordinates
+# helper method to visualize filter
+def visualize_filter(filter_mask):
+    fig = plt.figure(figsize=(10,8))
+    ax1 = fig.add_subplot(1,2,1)
+    ax1.imshow(filter_mask, cmap="gray")
+
+    a2 = fig.add_subplot(1,2,2, projection="3d")
+    x,y = np.meshgrid(np.arange(filter_mask.shape[0]),np.arange(filter_mask.shape[1]))
+    a2.plot_surface(x,y,filter_mask.T,cmap=plt.cm.coolwarm,linewidth=0, antialiased=False)
+    plt.show()
+
+# based on the approach from the book
+def butterworthNotchFilter(d0, center_frequency, bandwidth, n1, n2, n, visualize=False):
+    
+    # code adapted from lab 4 HPF
     k1, k2 = np.meshgrid(np.arange(-round(n2/2)+1, math.floor(n2/2)+1), np.arange(-round(n1/2)+1, math.floor(n1/2)+1))
-    
-    # Compute the distance from the origin for each frequency coordinate
     d = np.sqrt(k1**2 + k2**2)
-    
-    # Initialize the filter with all ones
-    h = np.ones_like(d)
-    
-    for point in points:
-        # Extract the coordinates of the notch frequency
-        u_k, v_k = point[0], point[1]
-        
-        # Swap u_k and v_k for frequency domain indexing
-        u_k, v_k = n2 - u_k, n1 - v_k
-        
-        # Compute the distances from the notch frequency and its symmetric counterpart
-        d1 = np.sqrt((k1 - u_k)**2 + (k2 - v_k)**2)
-        d2 = np.sqrt((k1 + u_k)**2 + (k2 + v_k)**2)
-        
-        # Apply the notch filter response using the Butterworth formula
-        h *= 1 / (1 + (d0**2) / (d1 * d2)**(2 * n))
-    
+
+    # the 'negative' frequency part
+    d0_neg = -d0
+
+    # the two high pass filters
+    h1 = 1 / (1 + (d0 / d)**(2*n))
+    h2 = 1 / (1 + (d0_neg / d)**(2*n))
+
+    # take the order into account
+    h = h1 * h2
+
     if visualize:
         visualize_filter(h)
-    
+
     return h
 
-# def notchfilter(img, center_freq, radius):
-    
-    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-
-    # bring img into frequency domain using fft
-    f = np.fft.fft2(img)
-    fshift = np.fft.fftshift(f)
-
-    # Compute dimensions of the image
-    rows = img.shape[0]
-    cols = img.shape[1]
-
-    # Create a notch filter mask
-    mask = np.ones((rows, cols), np.uint8)
-
-    # Compute the center coordinates of the notch filter
-    center_x = center_freq
-    center_y = center_freq
-
-    # Create a circular notch in the filter mask
-    cv.circle(mask, (center_x, center_y), radius, 0, -1)
-
-    # Apply filter in the frequency domain
-    filtered_fshift = fshift * mask
-
-    # Perform inverse Fourier transform
-    filtered_f = np.fft.ifftshift(filtered_fshift)
-    filtered_img = np.abs(np.fft.ifft2(filtered_f))
-
-    return filtered_img
-
+# add periodic noise to an image
 def add_periodic_noise(img, amplitude=1.5, frequency=33):
 
     # grayscale 
@@ -84,65 +57,14 @@ def add_periodic_noise(img, amplitude=1.5, frequency=33):
 
     X, Y = np.meshgrid(x,y)
 
-    # build the 2D sine, adjusting X and Y in output, controls orientation
-    #   f(x,y) = sin(2*pi*x/lambda)
-    
+    # build the 2D sine, adjusting X and Y in output controls orientation  
     wavelength = 1/frequency
-
     sine2D = amplitude * np.sin(2*np.pi*Y/wavelength)
+    img_noisy = img + sine2D
 
-    return img + sine2D
+    return img_noisy
 
     # now add the noise
-
-
-def visualize_filter(filter_mask):
-    fig = plt.figure(figsize=(10,8))
-    ax1 = fig.add_subplot(1,2,1)
-    ax1.imshow(filter_mask, cmap="gray")
-
-    a2 = fig.add_subplot(1,2,2, projection="3d")
-    x,y = np.meshgrid(np.arange(filter_mask.shape[0]),np.arange(filter_mask.shape[1]))
-    a2.plot_surface(x,y,filter_mask.T,cmap=plt.cm.coolwarm,linewidth=0, antialiased=False)
-    plt.show()
-
-def apply_filter(img,filter_mask):
-    f = np.fft.fftshift(np.fft.fft2(img))
-    f1 = f * filter_mask
-    x1 = np.fft.ifft2(np.fft.ifftshift(f1))
-
-    fig = plt.figure(figsize=(10,8))
-    ax1 = fig.add_subplot(1,2,1)
-    ax1.imshow(img,cmap="gray")
-    ax1.set_title("Original")
-    ax2 = fig.add_subplot(1,2,2)
-    ax2.imshow(abs(x1)/255, cmap="gray")
-    ax2.set_title("Transformed")
-    plt.show()
-
-
-def notchFilter(image, center_frequency, bandwidth, phi):
-    # convert center frequency and bandwidth to radians
-    omega0 = 2 * np.pi * center_frequency
-    bandwidth_rad = 2 * np.pi * bandwidth
-
-    # Compute the notch frequencies
-    f1 = omega0 - bandwidth_rad / 2
-    f2 = omega0 + bandwidth_rad / 2
-
-    # Compute the complex conjugate zeros
-    zero1 = np.exp(1j * f1)
-    zero2 = np.exp(1j * f2)
-
-    # Compute the numerator and denominator coefficients of the transfer function
-    numerator = [1, -2 * np.cos(omega0), 1]
-    denominator = [1, -2 * np.real(zero1 * np.exp(1j * phi)), np.abs(zero1)**2]
-
-    # Apply the notch filter using scipy.signal.lfilter2d
-    filtered_image = signal.lfilter2d(numerator, denominator, image)
-
-    return filtered_image
-
 
 
 # load image
@@ -162,7 +84,7 @@ fshift = np.fft.fftshift(f)
 magnitude_spectrum_img_noisy = 20*np.log(np.abs(fshift))
 
 # # apply our filter notch filter
-img_filtered =  notchFilter(img, freq ,10)
+img_filtered =  butterworthNotchFilter(img, freq ,10)
 
 # get magnitude spectrum of fitlered image
 f = np.fft.fft2(img_filtered)

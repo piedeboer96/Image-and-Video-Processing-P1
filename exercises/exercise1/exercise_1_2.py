@@ -22,7 +22,7 @@ h2_eq = cv.equalizeHist(h2); s2_eq = cv.equalizeHist(s2); v2_eq = cv.equalizeHis
 Plotting of histograms for image 1
 """
 
-plt.figure(figsize=(12,10))
+plt.figure(figsize=(10,8))
 
 # hue
 plt.subplot(2,3,1)
@@ -54,6 +54,37 @@ plt.title('Histogram EQ Value (Image 1)')
 plt.tight_layout()
 plt.show()
 
+# display the channels before / after equalization
+plt.figure(figsize=(10,8))
+
+plt.subplot(2,3,1)
+plt.imshow(h1, cmap='hsv')
+plt.title('Hue Channel')
+
+plt.subplot(2,3,2)
+plt.imshow(s1, cmap='gray')
+plt.title('Saturation Channel')
+
+plt.subplot(2,3,3)
+plt.imshow(v1, cmap='gray')
+plt.title('Value Channel')
+
+plt.subplot(2,3,4)
+plt.imshow(h1_eq, cmap='hsv')
+plt.title('Hue Channel EQ')
+
+plt.subplot(2,3,5)
+plt.imshow(s1_eq, cmap='gray')
+plt.title('Saturation Channel EQ')
+
+plt.subplot(2,3,6)
+plt.imshow(v1_eq, cmap='gray')
+plt.title('Value Channel EQ')
+
+plt.tight_layout()
+plt.show()
+
+
 """
 Display original and equalized image 2
 """
@@ -82,7 +113,7 @@ plt.show()
 Plotting of histograms for image 2
 """
 
-plt.figure(figsize=(12,10))
+plt.figure(figsize=(10,8))
 
 # hue
 plt.subplot(2,3,1)
@@ -113,6 +144,37 @@ plt.title('Histogram EQ Value (Image 2)')
 
 plt.tight_layout()
 plt.show()
+
+# channels before/after eq image 2
+plt.figure(figsize=(10,8))
+
+plt.subplot(2,3,1)
+plt.imshow(h2, cmap='hsv')
+plt.title('Hue Channel')
+
+plt.subplot(2,3,2)
+plt.imshow(s2, cmap='gray')
+plt.title('Saturation Channel')
+
+plt.subplot(2,3,3)
+plt.imshow(v2, cmap='gray')
+plt.title('Value Channel')
+
+plt.subplot(2,3,4)
+plt.imshow(h2_eq, cmap='hsv')
+plt.title('Hue Channel EQ')
+
+plt.subplot(2,3,5)
+plt.imshow(s2_eq, cmap='gray')
+plt.title('Saturation Channel EQ')
+
+plt.subplot(2,3,6)
+plt.imshow(v2_eq, cmap='gray')
+plt.title('Value Channel EQ')
+
+plt.tight_layout()
+plt.show()
+
 
 """
 Display original and equalized image 2

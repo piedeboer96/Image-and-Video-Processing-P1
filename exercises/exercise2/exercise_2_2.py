@@ -3,10 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 """
-        - Salt and pepper method
-        - Median Filter
-        - Kernels 45-deg and 135-deg from lab
-        - Median Filter
+    Methods
 """
 
 # method to add salt and pepper
@@ -25,11 +22,11 @@ def add_salt_and_pepper(img, prob):
 
     return image_noisy
 
-# diagonal 45
-diag_45 = np.array([[2, 1, 0], [1, 0, -1], [0, -1, -2]])
+# from notes made during lecture
+diag_135 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
 
 # clockwise rotate it 90 degree
-diag_135 = np.rot90(diag_45, 1)
+diag_45 = np.rot90(diag_135, 1)
 
 ##############################
 
@@ -43,11 +40,14 @@ img_noisy = add_salt_and_pepper(img, 0.5)
 img_noisy_45 = cv.filter2D(src=img_noisy,ddepth=-1,kernel=diag_45)
 img_noisy_135 = cv.filter2D(src=img_noisy, ddepth=-1,kernel=diag_135)
 
+(T, binary_45) = cv.threshold(img_noisy_45, 100, 255, cv.THRESH_BINARY)
+(T, binary_135) = cv.threshold(img_noisy_135, 100, 255, cv.THRESH_BINARY)
+
 # plot original image
 plt.subplot(2, 2, 1); plt.imshow(img); plt.title('Original Image'); plt.axis('off')
 
 # plot noisy image
-plt.subplot(2, 2, 2); plt.imshow(img_noisy); plt.title('Image with Salt and Pepper'); plt.axis('off')
+plt.subplot(2, 2, 2); plt.imshow(img_noisy); plt.title('Image with Impulse Noise'); plt.axis('off')
 
 # plot noisy image with edge detection kernel 45-deg applied
 plt.subplot(2, 2, 3); plt.imshow(img_noisy_45); plt.title('Noisy Image Edge Detection 45-deg'); plt.axis('off')
@@ -59,6 +59,18 @@ plt.subplot(2, 2, 4); plt.imshow(img_noisy_135); plt.title('Noisy Image Edge Det
 plt.tight_layout()
 plt.show()
 
+
+# binarized results...
+plt.subplot(2, 2, 1); plt.imshow(binary_45); plt.title('Noisy Image Edge Detection 45-deg Binary'); plt.axis('off')
+
+# plot noisy image
+plt.subplot(2, 2, 2); plt.imshow(binary_135); plt.title('Noisy Image Edge Detection 135-deg Binary'); plt.axis('off')
+
+# show results
+plt.tight_layout()
+plt.show()
+
+
 # apply median filter to noisy image with kernel size 5 
 img_filter = cv.medianBlur(img_noisy, 5)
 
@@ -66,17 +78,21 @@ img_filter = cv.medianBlur(img_noisy, 5)
 img_filter_45 = cv.filter2D(src=img_filter,ddepth=-1,kernel=diag_45)
 img_filter_135 = cv.filter2D(src=img_filter,ddepth=-1,kernel=diag_135)
 
-# plot the result
-plt.subplot(2, 2, 1); plt.imshow(img_noisy); plt.title('Noisy Image'); plt.axis('off')
+# binarize the filter image result
+(T, binary_filter_45) = cv.threshold(img_filter_45, 100, 255, cv.THRESH_BINARY)
+(T, binary_filter_135) = cv.threshold(img_filter_135, 100, 255, cv.THRESH_BINARY)
 
-# plot noisy image
+# noisy image
+plt.subplot(2, 2, 1); plt.imshow(img_noisy); plt.title('Image with Impulse Noise'); plt.axis('off')
+
+# filtered image
 plt.subplot(2, 2, 2); plt.imshow(img_filter); plt.title('Filtered Image'); plt.axis('off')
 
 # plot noisy image with edge detection kernel 45-deg applied
-plt.subplot(2, 2, 3); plt.imshow(img_filter_45); plt.title('Filtered Image with Edge Detection 45-deg'); plt.axis('off')
+plt.subplot(2, 2, 3); plt.imshow(binary_filter_45); plt.title('Filtered Image with Edge Detection 45-deg'); plt.axis('off')
 
-# plot noisy image with 
-plt.subplot(2, 2, 4); plt.imshow(img_filter_135); plt.title('Filtered Image with Edge Detection 135-deg'); plt.axis('off')
+# plot noisy image with edge detection kernel 45-deg applied + binarization
+plt.subplot(2, 2, 4); plt.imshow(binary_filter_135); plt.title('Filtered Image with Edge Detection 135-deg'); plt.axis('off')
 
 # show results
 plt.tight_layout()

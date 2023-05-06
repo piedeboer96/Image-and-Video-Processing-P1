@@ -44,7 +44,7 @@ fig.add_subplot(rows, columns, 2); plt.imshow(g2, cmap='gray'); plt.axis('off');
 fig.add_subplot(rows, columns, 3); plt.imshow(b2, cmap='gray'); plt.axis('off'); plt.title("Blue Channel (Image 2)")
 
 # HSV image 2
-fig.add_subplot(rows, columns, 4); plt.imshow(h2, cmap='hsv'); plt.axis('off'); plt.title("Hue Channel (Image 2)")
+fig.add_subplot(rows, columns, 4); plt.imshow(h2, cmap='gray'); plt.axis('off'); plt.title("Hue Channel (Image 2)")
 fig.add_subplot(rows, columns, 5); plt.imshow(s2, cmap='gray'); plt.axis('off'); plt.title("Saturation Channel (Image 2)")
 fig.add_subplot(rows, columns, 6); plt.imshow(v2, cmap='gray'); plt.axis('off'); plt.title("Value Channel (Image 2)")
 
