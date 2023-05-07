@@ -25,7 +25,6 @@ def build_2D_sine(img, amplitude, frequency):
 
     return X, Y, sine2D
 
-
 # load image
 img = cv.imread('images/birdie.jpg', cv.COLOR_BGR2GRAY)
 
@@ -45,3 +44,18 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(X, Y, sine2D, cmap='gray')
 ax.set_title('Meshgrid 3D Sine Pattern')
 plt.show()
+
+# Extra 
+f = np.fft.fft2(sine2D)
+fshift = np.fft.fftshift(f)
+magnitude_spectrum = np.abs(fshift)
+magnitude_spectrum = np.log(magnitude_spectrum + 1)
+plt.imshow(magnitude_spectrum, cmap='gray')
+plt.title('magnitude specturm 2d sine')
+plt.colorbar()
+plt.axis('off')
+plt.show()
+
+# POINTS:
+#   (1417,1206) & (1417,1199)
+#   for freq=10, amp=10

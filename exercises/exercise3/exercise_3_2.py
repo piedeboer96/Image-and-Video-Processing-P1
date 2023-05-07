@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 # method to build 2D adapted from:
 #   https://thepythoncodingbook.com/2022/05/28/numpy-meshgrid/
+
 def build_2D_sine(img, amplitude, frequency):
 
     dimensions = img.shape
@@ -27,14 +28,13 @@ def build_2D_sine(img, amplitude, frequency):
 
     # now add the noise
 
-
 # Load the image
 img = cv2.imread('images/birdie.jpg', cv2.IMREAD_GRAYSCALE)
-X,Y, sine = build_2D_sine(img,amplitude=10,frequency=50)
+X,Y, sine = build_2D_sine(img,amplitude=10,frequency=100)
 
 # Display the 2D cosine or sine
 plt.imshow(sine, cmap='gray')
-plt.title('2D sine with freq 50')
+plt.title('2D sine')
 plt.show()
 
 f = np.fft.fft2(sine)

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # method to add periodic noise to image
-def add_periodic_noise(img, amplitude, frequency):
+def add_periodic_noise_spatial(img, amplitude, frequency):
 
     # grayscale
     dimensions = img.shape
@@ -31,12 +31,7 @@ img = cv.imread('images/birdie.jpg')
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # image with added periodic noise
-img_corrupt = add_periodic_noise(img, amplitude=100, frequency=100)
-
-# i=1
-# while i<10:
-#     img_corrupt = add_periodic_noise(img_corrupt,amplitude=100, frequency=i*10)
-#     i = i+1
+img_corrupt = add_periodic_noise_spatial(img, amplitude=1000, frequency=2)
 
 """ Magnitude spectra """
 
@@ -60,7 +55,6 @@ middle_col_img = magnitude_spectrum_img[:,magnitude_spectrum_img.shape[1]//2]
 # get 1D slice middle row and column 'corrupt'
 middle_row_corrupt = magnitude_spectrum_corrupt[magnitude_spectrum_corrupt.shape[0]//2,:]
 middle_column_corrupt = magnitude_spectrum_corrupt[:,magnitude_spectrum_corrupt.shape[1]//2]
-
 
 """ Plots """
 # plot original and corrupt image

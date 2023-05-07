@@ -2,13 +2,8 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from scipy import signal
 
-"""
-    Methods
-"""
-
-# helper method to visualize filter
+# visualize filter
 def visualize_filter(filter_mask):
     fig = plt.figure(figsize=(10,8))
     ax1 = fig.add_subplot(1,2,1)
@@ -19,34 +14,10 @@ def visualize_filter(filter_mask):
     a2.plot_surface(x,y,filter_mask.T,cmap=plt.cm.coolwarm,linewidth=0, antialiased=False)
     plt.show()
 
-# based on the approach from the book
-def butterworthNotchFilter(d0, center_frequency, bandwidth, n1, n2, n, visualize=False):
-    
-    # code adapted from lab 4 HPF
-    k1, k2 = np.meshgrid(np.arange(-round(n2/2)+1, math.floor(n2/2)+1), np.arange(-round(n1/2)+1, math.floor(n1/2)+1))
-    d = np.sqrt(k1**2 + k2**2)
+# periodic noise 
+def add_periodic_noise(img, amplitude, frequency):
 
-    # the 'negative' frequency part
-    d0_neg = -d0
-
-    # the two high pass filters
-    h1 = 1 / (1 + (d0 / d)**(2*n))
-    h2 = 1 / (1 + (d0_neg / d)**(2*n))
-
-    # take the order into account
-    h = h1 * h2
-
-    if visualize:
-        visualize_filter(h)
-
-    return h
-
-# add periodic noise to an image
-def add_periodic_noise(img, amplitude=1.5, frequency=33):
-
-    # grayscale 
-    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-
+    # grayscale
     dimensions = img.shape
 
     print('dimensions', dimensions)
@@ -57,161 +28,171 @@ def add_periodic_noise(img, amplitude=1.5, frequency=33):
 
     X, Y = np.meshgrid(x,y)
 
-    # build the 2D sine, adjusting X and Y in output controls orientation  
+    # build the 2D sine, adjusting X and Y in output, controls orientation
+    #   f(x,y) = sin(2*pi*x/lambda)
+    
     wavelength = 1/frequency
-    sine2D = amplitude * np.sin(2*np.pi*Y/wavelength)
-    img_noisy = img + sine2D
 
-    return img_noisy
+    sine2D = amplitude * np.sin(2*np.pi*X/wavelength)
 
     # now add the noise
+    return np.add(img, sine2D)
 
+# ideal bandreject 
+def idealbandreject(n1, n2, freq1, freq2, visualize=False):
+    
+    k1, k2 = np.meshgrid(np.arange(-round(n2/2)+1, math.floor(n2/2)+1), np.arange(-round(n1/2)+1, math.floor(n1/2)+1))
+    d = np.sqrt(k1**2 + k2**2)
+    
+    # reject filter at frequencies between freq1 and freq2
+    reject = np.ones_like(d)
+    reject[(d > freq1) & (d < freq2)] = 0
+
+    h = reject
+
+    if visualize:
+        visualize_filter(h)
+
+    return h
+
+# apply filter
+def apply_filter(img,filter_mask):
+    f = np.fft.fftshift(np.fft.fft2(img))
+    f1 = f * filter_mask
+    x1 = np.fft.ifft2(np.fft.ifftshift(f1))
+
+    fig = plt.figure(figsize=(10,8))
+    ax1 = fig.add_subplot(1,2,1)
+    ax1.imshow(img,cmap="gray")
+    ax1.set_title("Original")
+    
+    ax2 = fig.add_subplot(1,2,2)
+    ax2.imshow(abs(x1)/255, cmap="gray")
+    ax2.set_title("Transformed")
+    plt.show()
+
+# method to add periodic noise to image
+def add_periodic_noise(img, amplitude, frequency):
+
+    # grayscale
+    dimensions = img.shape
+
+    print('dimensions', dimensions)
+
+    # build meshgrid based on image dimensions
+    x = np.linspace(-1,1,dimensions[1])
+    y = np.linspace(-1,1,dimensions[0])
+
+    X, Y = np.meshgrid(x,y)
+
+    # build the 2D sine, adjusting X and Y in output, controls orientation
+    #   f(x,y) = sin(2*pi*x/lambda)
+    
+    wavelength = 1/frequency
+
+    sine2D = amplitude * np.sin(2*np.pi*Y/wavelength)
+
+    # now add the noise
+    return np.add(img, sine2D)
 
 # load image
 img = cv.imread('images/birdie.jpg')
+img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-# frequency for noise and filter
-freq = 30
-amplitude = 10
-radius = 10
+# image with added periodic noise
+img_corrupt = add_periodic_noise(img, amplitude=10, frequency=100)
 
-# add noise to the image
-img_noisy = add_periodic_noise(img, amplitude, freq)
+""" Magnitude spectra """
+# noisy image
+f2 = np.fft.fft2(img_corrupt)
+fshift2 = np.fft.fftshift(f2)
+magnitude_spectrum_corrupt = np.abs(fshift2)
+magnitude_spectrum_corrupt = np.log(magnitude_spectrum_corrupt + 1)
 
-# get magnitude spectrum of noisy image
-f = np.fft.fft2(img_noisy)
-fshift = np.fft.fftshift(f)
-magnitude_spectrum_img_noisy = 20*np.log(np.abs(fshift))
+# filtered image and magnitude spectra
+h = idealbandreject(img_corrupt.shape[0],img_corrupt.shape[1],90,110,visualize=True)
 
-# # apply our filter notch filter
-img_filtered =  butterworthNotchFilter(img, freq ,10)
+f1 = np.fft.fftshift(np.fft.fft2(img_corrupt))
+filtered = h * f1
 
-# get magnitude spectrum of fitlered image
-f = np.fft.fft2(img_filtered)
-fshift = np.fft.fftshift(f)
-magnitude_spectrum_filtered_img = 20*np.log(np.abs(fshift))
+fshift = np.fft.fftshift(filtered)
+magnitude_spectrum_filtered = np.abs(fshift)  
+magnitude_spectrum_filtered = np.log(magnitude_spectrum_filtered + 1) 
 
+filtered_img = np.fft.ifft2(np.fft.ifftshift(filtered)).real
 
-# TODO;
-#
-#   Create a frequency domain filter to remove the periodic noise from the previous question’s noisy image. Display and discuss: 
-#   (1) the de-noising filter’s FT magnitude in 1D and 2D, 
-#   (2) the de-noised image’s FT magnitude in 1D and 2D, 
-#   (3) the resulting de-noised image.
-#
-#
+""" 1D Slices """
+# noisy
+middle_row_corrupt = magnitude_spectrum_corrupt[magnitude_spectrum_corrupt.shape[0]//2,:]
+middle_column_corrupt = magnitude_spectrum_corrupt[:,magnitude_spectrum_corrupt.shape[1]//2]
 
+# filtered
+middle_row_filtered = magnitude_spectrum_filtered[magnitude_spectrum_filtered.shape[0]//2,:]
+middle_col_filtered = magnitude_spectrum_filtered[:,magnitude_spectrum_filtered.shape[1]//2]
 
-# plots
-plt.subplot(2,2,1)
-plt.imshow(img_noisy,  cmap='Greys')
-plt.title('Noisy Image')
-plt.axis('off')
-
-# plt.subplot(2,2,2)
-# plt.imshow(magnitude_spectrum_img_noisy,cmap='Greys')
-# plt.title('Noisy Image Magnitude Spectrum')
-# plt.axis('off')
-
-# plt.subplot(2,2,3)
-# plt.imshow(img_filtered,cmap='Greys')
-# plt.title('Filtered Image')
-# plt.axis('off')
-
-# plt.subplot(2,2,4)
-# plt.imshow(magnitude_spectrum_filtered_img,cmap='Greys')
-# plt.title('Magnitude Spectrum Filtered Image')
-# plt.axis('off')
-
-plt.tight_layout()
-plt.show()
-
-
-# Plot 1D magnitude spectrum along a row
-plt.figure(figsize=(8, 4))
-row_idx = magnitude_spectrum_filtered_img.shape[0] // 2  # Select middle row
-plt.plot(magnitude_spectrum_filtered_img[row_idx, :], color='blue')
-plt.title('1D Magnitude Spectrum along a Row')
-plt.xlabel('Column')
+""" Plots """
+plt.plot(middle_row_corrupt)
+plt.title('Middle Row 1D Slice Corrupt')
 plt.ylabel('Magnitude')
-plt.grid(True)
 plt.show()
 
-# Plot 1D magnitude spectrum along a column
-plt.figure(figsize=(8, 4))
-col_idx = magnitude_spectrum_filtered_img.shape[1] // 2  # Select middle column
-plt.plot(magnitude_spectrum_filtered_img[:, col_idx], color='red')
-plt.title('1D Magnitude Spectrum along a Column')
-plt.xlabel('Row')
+plt.plot(middle_column_corrupt)
+plt.title('Middle Column 1D Slice Corrupt')
 plt.ylabel('Magnitude')
-plt.grid(True)
 plt.show()
 
-
-
-
-### apply butterworth LPF
-def butterworthLPF(d0,n1,n2,n, visualize = False):
-    k1,k2 = np.meshgrid(np.arange(-round(n2/2)+1, math.floor(n2/2)+1), np.arange(-round(n1/2)+1, math.floor(n1/2)+1))
-    d = np.sqrt(k1**2 + k2**2)
-    h = 1 / (1 + (d / d0)**(2*n))
-    if visualize:
-        visualize_filter(h)
-    return h 
-    
-print('img noisy...', img_noisy.shape)
-f = np.fft.fftshift(np.fft.fft2(img_noisy))
-
-img = img_noisy
-d0 = round(img.shape[0] /20)
-h = butterworthLPF(d0,img.shape[0],img.shape[1],2);
-f1 = f*h
-
-x1 = abs(np.fft.ifft2(np.fft.ifftshift(f1)))
-x1[x1==0] = 1e-2
-
-x2 = img / x1
-
-fig = plt.figure(figsize=(20,8))
-ax1 = fig.add_subplot(1,3,1)
-ax1.imshow(img,cmap="gray")
-ax1.set_title("Original")
-ax2 = fig.add_subplot(1,3,2)
-ax2.imshow(abs(x1)/255, cmap="gray")
-ax2.set_title("Blurred")
-ax2 = fig.add_subplot(1,3,3)
-ax2.imshow(abs(x2), cmap="gray")
-ax2.set_title("Pencil Sketch")
+plt.plot(middle_row_filtered)
+plt.title('Middle Row 1D Slice Filtered')
+plt.ylabel('Magnitude')
 plt.show()
 
+plt.plot(middle_col_filtered)
+plt.title('Middle Column 1D Slice Filtered')
+plt.ylabel('Magnitude')
+plt.show()
 
-
- 
-
-
-print('img noisy...', img_noisy.shape)
-f = np.fft.fftshift(np.fft.fft2(img_noisy))
-
-# img = img_noisy
-# d0 = round(img.shape[0] /20)
-# h = nott(d0,img.shape[0],img.shape[1],1,visualize=True);
-# f1 = f*h
-
-
-# TODO: apply inverse fft to f1 , 
-#       and display both the noisy image and notch-filtered image
-
-filtered_img = np.fft.ifft2(np.fft.ifftshift(f1)).real
-
-# Display the noisy image and notch-filtered image
-plt.subplot(1, 2, 1)
-plt.imshow(img_noisy, cmap='gray')
-plt.title('Noisy Image')
-plt.axis('off')
-
-plt.subplot(1, 2, 2)
+""" Filtered Image"""
 plt.imshow(filtered_img, cmap='gray')
-plt.title('Notch-Filtered Image')
-plt.axis('off')
-
+plt.title('Filtered Image')
 plt.show()
+
+
+# plot magnitude spectrum filtered
+plt.imshow(magnitude_spectrum_filtered, cmap='gray')
+plt.title('Magnitude Spectrum Filtered')
+plt.axis('off')
+plt.show()
+
+
+""" Display Filter """
+# Display the 2D cosine or sine
+plt.imshow(h, cmap='gray')
+plt.title('Filter')
+plt.show()
+
+f = np.fft.fft2(h)
+fshift = np.fft.fftshift(f)
+
+# Compute the magnitude spectrum
+magnitude_spectrum = np.abs(fshift)
+magnitude_spectrum = np.log(magnitude_spectrum + 1)
+
+# Display the magnitude spectrum
+plt.imshow(magnitude_spectrum)
+plt.title('2D FFT Filter')
+plt.show()
+
+# Compute the middle row and column of the magnitude spectrum
+middle_row = magnitude_spectrum[magnitude_spectrum.shape[0]//2,:]
+middle_col = magnitude_spectrum[:,magnitude_spectrum.shape[1]//2]
+
+# Display the middle row and column
+plt.plot(middle_row)
+plt.title('Middle Row of FFT Magnitude')
+plt.show()
+
+plt.plot(middle_col)
+plt.title('Middle Column of FFT Magnitude')
+plt.show()
+
+""" 2D FFTs """
