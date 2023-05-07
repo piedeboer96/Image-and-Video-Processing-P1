@@ -59,7 +59,7 @@ middle_column_corrupt = magnitude_spectrum_corrupt[:,magnitude_spectrum_corrupt.
 """ Plots """
 # plot original and corrupt image
 plt.subplot(1, 2, 1)
-plt.imshow(img, cmap='gray')
+plt.imshow(img,cmap='gray')
 plt.title('Original Image')
 plt.axis('off')
 
@@ -71,25 +71,23 @@ plt.axis('off')
 plt.tight_layout()
 plt.show()
 
-# plot magnitude spectrum original and corrupt image
-
-plt.imshow(magnitude_spectrum_img, cmap='gray')
-plt.title('Magnitude Spectrum Original Image')
-plt.axis('off')
-plt.show()
-
-
-plt.imshow(magnitude_spectrum_corrupt, cmap='gray')
+# plot magnitude spectrum corrupt image
+plt.subplot(1,2,1)
+plt.imshow(magnitude_spectrum_corrupt)
 plt.title('Magnitude Spectrum Corrupt Image')
 plt.axis('off')
-plt.show()
 
+plt.imshow(magnitude_spectrum_corrupt)
+plt.title('Magnitude Spectrum Corrupt Image')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
 
 plt.plot(middle_row_corrupt)
 plt.title('Middle Row 1D Slice Corrupt')
 plt.ylabel('Magnitude')
 plt.show()
-
 
 plt.plot(middle_column_corrupt)
 plt.title('Middle Column 1D Slice Corrupt')

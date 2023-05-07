@@ -109,10 +109,6 @@ def add_periodic_noise(img, amplitude, frequency):
     # now add the noise
     return np.add(img, sine2D)
 
-
-
-
-
 # load image
 img = cv.imread('images/birdie.jpg')
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -150,16 +146,7 @@ middle_row_filtered = magnitude_spectrum_filtered[magnitude_spectrum_filtered.sh
 middle_col_filtered = magnitude_spectrum_filtered[:,magnitude_spectrum_filtered.shape[1]//2]
 
 """ Plots """
-plt.plot(middle_row_corrupt)
-plt.title('Middle Row 1D Slice Corrupt')
-plt.ylabel('Magnitude')
-plt.show()
-
-plt.plot(middle_column_corrupt)
-plt.title('Middle Column 1D Slice Corrupt')
-plt.ylabel('Magnitude')
-plt.show()
-
+# filtered 1D slices
 plt.plot(middle_row_filtered)
 plt.title('Middle Row 1D Slice Filtered')
 plt.ylabel('Magnitude')
@@ -176,14 +163,14 @@ plt.title('Filtered Image')
 plt.show()
 
 # plot magnitude spectrum filtered
-plt.imshow(magnitude_spectrum_filtered, cmap='gray')
+plt.imshow(magnitude_spectrum_filtered)
 plt.title('Magnitude Spectrum Filtered')
 plt.axis('off')
+plt.colorbar()
 plt.show()
 
-
 """ Display Filter """
-# Display the 2D cosine or sine
+# display filter 2D FFT
 plt.imshow(H, cmap='gray')
 plt.title('Filter')
 plt.show()
@@ -197,19 +184,19 @@ magnitude_spectrum = np.log(magnitude_spectrum + 1)
 
 # Display the magnitude spectrum
 plt.imshow(magnitude_spectrum)
-plt.title('2D FFT Filter')
+plt.title('2D FFT Butterworth Bandreject Notchfilter')
 plt.show()
 
 # Compute the middle row and column of the magnitude spectrum
 middle_row = magnitude_spectrum[magnitude_spectrum.shape[0]//2,:]
 middle_col = magnitude_spectrum[:,magnitude_spectrum.shape[1]//2]
 
-# Display the middle row and column
+# 1D slices 
 plt.plot(middle_row)
-plt.title('Middle Row of FFT Magnitude')
+plt.title('Middle Row Magntidue Notch Reject')
 plt.show()
 
 plt.plot(middle_col)
-plt.title('Middle Column of FFT Magnitude')
+plt.title('Middle Column Magntidue Notch Reject')
 plt.show()
 

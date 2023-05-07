@@ -1,7 +1,6 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.fft import fft2, ifft2
 
 # adapted from C++ code on this link: 
 #   https://answers.opencv.org/question/36309/opencv-gaussian-noise/
@@ -31,10 +30,8 @@ diag_135 = np.array([[0,1,1],[-1,0,1],[-1,-1,0]])
 diag_45 = np.rot90(diag_135, 1)
 
 
-
-
 # load image
-img = cv.imread('images/diag2.jpg', cv.COLOR_BGR2GRAY) 
+img = cv.imread('images/diag2.jpg', cv.IMREAD_GRAYSCALE) 
 
 # add varying levels of gaussian noise
 img_noisy = add_gaussian_noise(img,0,0.1)
@@ -50,15 +47,13 @@ img_denoise = cv.GaussianBlur(img_noisy,(5,5), 0)
 img_denoise_45_edge = cv.filter2D(src=img_denoise,ddepth=-1,kernel=diag_45)
 img_denoise_135_edge = cv.filter2D(src=img_denoise,ddepth=-1,kernel=diag_135)
 
-# TODO: (make one plot with 6 subplots...)
-#   plot original and noisy image
-#   plot edge detection images on noisy images
-#   plot edge detection images on denoised images 
+plt.subplot(2, 2, 1); plt.imshow(img,cmap='gray'); plt.title('Original Image'); plt.axis('off')
+plt.subplot(2, 2, 2); plt.imshow(img_noisy,cmap='gray'); plt.title('Noisy Image'); plt.axis('off')
+plt.tight_layout()
+plt.show()
 
-# create 6-subplot figure
+# create subplto
 fig, axs = plt.subplots(2,2, figsize=(12, 8))
-
-
 
 # plot edge detection on noisy image
 axs[0, 0].imshow(img_noisy_45, cmap='gray')
