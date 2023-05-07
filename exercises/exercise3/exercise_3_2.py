@@ -1,54 +1,70 @@
-import cv2 as cv
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# load image
-img = cv.imread('images/birdie.jpg')
+# method to build 2D adapted from:
+#   https://thepythoncodingbook.com/2022/05/28/numpy-meshgrid/
+def build_2D_sine(img, amplitude, frequency):
 
-# get dimensions of image
-dimensions = img.shape
+    dimensions = img.shape
 
-# build meshgrid based on image dimensions
-x = np.linspace(-1,1,dimensions[0])
-y = np.linspace(-1,1,dimensions[1])
+    print('dimensions', dimensions)
 
-X, Y = np.meshgrid(x,y)
+    # build meshgrid based on image dimensions
+    x = np.linspace(-1,1,dimensions[1])
+    y = np.linspace(-1,1,dimensions[0])
 
-# build the 2D sine, adjusting X and Y in output, controls orientation
-#   f(x,y) = sin(2*pi*x/lambda)
-wavelength = 0.5  
-amplitude = 1.0
-sine2D = amplitude * np.sin(2*np.pi*Y/wavelength)
+    X, Y = np.meshgrid(x,y)
 
-# compute 2d fft, centre it and compute magnitude spectrum
-f = np.fft.fftshift(np.fft.fft2(sine2D))
-magnitude_spectrum = 20*np.log(np.abs(f))
+    # build the 2D sine, adjusting X and Y in output, controls orientation
+    #   f(x,y) = sin(2*pi*x/lambda)
+    
+    wavelength = 1/frequency
 
-# get 1D slices
+    sine2D = amplitude * np.sin(2*np.pi*Y/wavelength)
 
-# is this code the same...
-# middle_row = magnitude_spectrum[int(img.shape[0]/2),:]
-# middle_column = magnitude_spectrum[int(img.shape[1]/2),:]
+    return X, Y, sine2D
 
-# as this code..
-middle_row = magnitude_spectrum[int(img.shape[0]/2),:]
-middle_column = magnitude_spectrum[:,int(img.shape[1]/2)]
+    # now add the noise
 
 
-# FFT 
-plt.imshow(magnitude_spectrum, cmap='gray')
+# Load the image
+img = cv2.imread('images/birdie.jpg', cv2.IMREAD_GRAYSCALE)
+X,Y, sine = build_2D_sine(img,amplitude=10,frequency=50)
+
+# Display the 2D cosine or sine
+plt.imshow(sine, cmap='gray')
+plt.title('2D sine with freq 50')
+plt.show()
+
+f = np.fft.fft2(sine)
+fshift = np.fft.fftshift(f)
+
+# Compute the magnitude spectrum
+magnitude_spectrum = np.abs(fshift)
+magnitude_spectrum = np.log(magnitude_spectrum + 1)
+
+# Display the magnitude spectrum
+plt.imshow(magnitude_spectrum)
 plt.title('Magnitude Spectrum')
-plt.axis('off')
 plt.show()
 
-# 1D slices
-plt.subplot(1, 2, 1)
+# Compute the middle row and column of the magnitude spectrum
+middle_row = magnitude_spectrum[magnitude_spectrum.shape[0]//2,:]
+middle_col = magnitude_spectrum[:,magnitude_spectrum.shape[1]//2]
+
+# Display the middle row and column
 plt.plot(middle_row)
-plt.title('Middle Row 1D Slice')
-
-plt.subplot(1, 2,2)
-plt.plot(middle_column)
-plt.title('Middle Column 1D Slice')
-
-plt.tight_layout()
+plt.title('Middle Row of FFT Magnitude')
 plt.show()
+
+plt.plot(middle_col)
+plt.title('Middle Column of FFT Magnitude')
+plt.show()
+
+
+
+
+
+
+

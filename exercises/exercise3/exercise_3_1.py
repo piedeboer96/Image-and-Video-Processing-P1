@@ -2,11 +2,9 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-# method to build meshgrid 2D sine based on image dimensions
-def build_2D_sine(img, amplitude=1.5, frequency=33):
-
-    # grayscale
-    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+# method to build 2D adapted from:
+#   https://thepythoncodingbook.com/2022/05/28/numpy-meshgrid/
+def build_2D_sine(img, amplitude, frequency):
 
     dimensions = img.shape
 
@@ -27,13 +25,12 @@ def build_2D_sine(img, amplitude=1.5, frequency=33):
 
     return X, Y, sine2D
 
-    # now add the noise
 
 # load image
 img = cv.imread('images/birdie.jpg', cv.COLOR_BGR2GRAY)
 
 # add periodic noise
-X,Y, sine2D = build_2D_sine(img,1.0,2)
+X,Y, sine2D = build_2D_sine(img,amplitude=10, frequency=2)
 
 # Plot the sine pattern
 plt.imshow(sine2D, cmap='gray')

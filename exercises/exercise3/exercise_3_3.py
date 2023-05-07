@@ -1,15 +1,11 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import misc
 
-
-# method that returns image with periodic noise added 
-def add_periodic_noise(img, amplitude=1.5, frequency=33):
+# method to add periodic noise to image
+def add_periodic_noise(img, amplitude, frequency):
 
     # grayscale
-    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-
     dimensions = img.shape
 
     print('dimensions', dimensions)
@@ -30,35 +26,46 @@ def add_periodic_noise(img, amplitude=1.5, frequency=33):
     # now add the noise
     return np.add(img, sine2D)
 
-
+# load image
 img = cv.imread('images/birdie.jpg')
-
-img_original = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # image with added periodic noise
-img_corrupt = add_periodic_noise(img, 50, 60)
+img_corrupt = add_periodic_noise(img, amplitude=100, frequency=100)
 
-# original magnitude spectrum
-f = np.fft.fft2(img_original)
-fshift = np.fft.fftshift(f)
-magnitude_spectrum_original = 20*np.log(np.abs(fshift))
+# i=1
+# while i<10:
+#     img_corrupt = add_periodic_noise(img_corrupt,amplitude=100, frequency=i*10)
+#     i = i+1
 
-# corrupt image magnitude spectrum
-f = np.fft.fft2(img_corrupt)
-fshift = np.fft.fftshift(f)
-magnitude_spectrum_corrupt = 20*np.log(np.abs(fshift))
+""" Magnitude spectra """
 
-# get 1D slice middle row and column 'original'
-middle_row_original = magnitude_spectrum_original[int(img.shape[0]/2),:]
-middle_column_original = magnitude_spectrum_original[:,int(img.shape[1]/2)]
+# original
+f1 = np.fft.fft2(img)
+fshift1 = np.fft.fftshift(f1)
+magnitude_spectrum_img = np.abs(fshift1)
+magnitude_spectrum_img = np.log(magnitude_spectrum_img + 1)
+
+# noisy image
+f2 = np.fft.fft2(img_corrupt)
+fshift2 = np.fft.fftshift(f2)
+magnitude_spectrum_corrupt = np.abs(fshift2)
+magnitude_spectrum_corrupt = np.log(magnitude_spectrum_corrupt + 1)
+
+""" 1D Slices """
+# middle row and middle colum of original image
+middle_row_img = magnitude_spectrum_img[magnitude_spectrum_img.shape[0]//2,:]
+middle_col_img = magnitude_spectrum_img[:,magnitude_spectrum_img.shape[1]//2]
 
 # get 1D slice middle row and column 'corrupt'
-middle_row_corrupt = magnitude_spectrum_corrupt[int(img.shape[0]/2),:]
-middle_column_corrupt = magnitude_spectrum_corrupt[:,int(img.shape[1]/2)]
+middle_row_corrupt = magnitude_spectrum_corrupt[magnitude_spectrum_corrupt.shape[0]//2,:]
+middle_column_corrupt = magnitude_spectrum_corrupt[:,magnitude_spectrum_corrupt.shape[1]//2]
 
+
+""" Plots """
 # plot original and corrupt image
 plt.subplot(1, 2, 1)
-plt.imshow(img_original, cmap='gray')
+plt.imshow(img, cmap='gray')
 plt.title('Original Image')
 plt.axis('off')
 
@@ -71,41 +78,40 @@ plt.tight_layout()
 plt.show()
 
 # plot magnitude spectrum original and corrupt image
-plt.subplot(1, 2, 1)
-plt.imshow(magnitude_spectrum_original, cmap='gray')
+
+plt.imshow(magnitude_spectrum_img, cmap='gray')
 plt.title('Magnitude Spectrum Original Image')
 plt.axis('off')
+plt.show()
 
-plt.subplot(1, 2, 2)
+
 plt.imshow(magnitude_spectrum_corrupt, cmap='gray')
 plt.title('Magnitude Spectrum Corrupt Image')
 plt.axis('off')
-
-plt.tight_layout()
 plt.show()
 
-plt.subplot(1, 2, 1)
-plt.plot(middle_row_original)
+
+
+plt.plot(middle_row_img)
 plt.title('Middle Row 1D Slice Original')
 plt.ylabel('Magnitude')
-
-plt.subplot(1, 2, 2)
-plt.plot(middle_column_original)
-plt.title('Middle Column 1D Slice Original')
-plt.ylabel('Magnitude')
-
-plt.tight_layout()
 plt.show()
 
-plt.subplot(1, 2, 1)
+
+plt.plot(middle_col_img)
+plt.title('Middle Column 1D Slice Original')
+plt.ylabel('Magnitude')
+plt.show()
+
 plt.plot(middle_row_corrupt)
 plt.title('Middle Row 1D Slice Corrupt')
 plt.ylabel('Magnitude')
+plt.show()
 
-plt.subplot(1, 2, 2)
+
 plt.plot(middle_column_corrupt)
 plt.title('Middle Column 1D Slice Corrupt')
 plt.ylabel('Magnitude')
+plt.show()
 
-plt.tight_layout()
-plt.show
+
