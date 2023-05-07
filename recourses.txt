@@ -65,6 +65,8 @@ Exercise 2
 
 (2.3)
 
+    add gaussian noise opencv:
+        - https://answers.opencv.org/question/36309/opencv-gaussian-noise/
     wiener filter gives good results for gaussian noise:
         - https://www.computerscijournal.org/vol10no1/noise-removal-and-filtering-techniques-used-in-medical-images/#:~:text=Weiner%20filter%20gives%20best%20results,for%20Gaussian%20and%20Speckle%20Noise
     wiener filter starter code in python from researchgate
