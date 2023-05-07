@@ -31,7 +31,7 @@ img = cv.imread('images/birdie.jpg')
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # image with added periodic noise
-img_corrupt = add_periodic_noise_spatial(img, amplitude=1000, frequency=2)
+img_corrupt = add_periodic_noise_spatial(img, amplitude=100, frequency=2)
 
 """ Magnitude spectra """
 
@@ -84,18 +84,6 @@ plt.title('Magnitude Spectrum Corrupt Image')
 plt.axis('off')
 plt.show()
 
-
-
-plt.plot(middle_row_img)
-plt.title('Middle Row 1D Slice Original')
-plt.ylabel('Magnitude')
-plt.show()
-
-
-plt.plot(middle_col_img)
-plt.title('Middle Column 1D Slice Original')
-plt.ylabel('Magnitude')
-plt.show()
 
 plt.plot(middle_row_corrupt)
 plt.title('Middle Row 1D Slice Corrupt')

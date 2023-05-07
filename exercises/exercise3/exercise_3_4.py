@@ -55,6 +55,20 @@ def idealbandreject(n1, n2, freq1, freq2, visualize=False):
 
     return h
 
+# butterworthnotch reject transfer function (Gonzalez, page 300)
+def H_NR(u, v, d0, n):
+    M, N = u.shape[0], u.shape[1]
+    D0 = np.sqrt((u-M/2)**2 + (v-N/2)**2)
+    D = np.zeros((M, N, 3))
+    D[:, :, 0] = np.sqrt((u-M/2)**2 + (v-N/2-2)**2)
+    D[:, :, 1] = np.sqrt((u-M/2+2)**2 + (v-N/2)**2)
+    D[:, :, 2] = np.sqrt((u-M/2-2)**2 + (v-N/2)**2)
+    H_NR = 1
+    for k in range(3):
+        numerator = (d0**2)/(D0*D[:, :, k])
+        H_NR *= 1/(1 + numerator**n)*1/(1 + (d0/D[:, :, k])**n)
+    return H_NR
+
 # apply filter
 def apply_filter(img,filter_mask):
     f = np.fft.fftshift(np.fft.fft2(img))
@@ -95,25 +109,30 @@ def add_periodic_noise(img, amplitude, frequency):
     # now add the noise
     return np.add(img, sine2D)
 
+
+
+
+
 # load image
 img = cv.imread('images/birdie.jpg')
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # image with added periodic noise
-img_corrupt = add_periodic_noise(img, amplitude=10, frequency=100)
+img_corrupt = add_periodic_noise(img, amplitude=25, frequency=2)
 
 """ Magnitude spectra """
 # noisy image
-f2 = np.fft.fft2(img_corrupt)
-fshift2 = np.fft.fftshift(f2)
+F_25 = np.fft.fft2(img_corrupt)
+fshift2 = np.fft.fftshift(F_25)
 magnitude_spectrum_corrupt = np.abs(fshift2)
 magnitude_spectrum_corrupt = np.log(magnitude_spectrum_corrupt + 1)
 
 # filtered image and magnitude spectra
-h = idealbandreject(img_corrupt.shape[0],img_corrupt.shape[1],90,110,visualize=True)
+radius=3; n=8
+H = H_NR(*np.meshgrid(np.arange(F_25.shape[0]), np.arange(F_25.shape[1]), indexing='ij'), d0=radius, n=n)
 
 f1 = np.fft.fftshift(np.fft.fft2(img_corrupt))
-filtered = h * f1
+filtered = H * f1
 
 fshift = np.fft.fftshift(filtered)
 magnitude_spectrum_filtered = np.abs(fshift)  
@@ -156,7 +175,6 @@ plt.imshow(filtered_img, cmap='gray')
 plt.title('Filtered Image')
 plt.show()
 
-
 # plot magnitude spectrum filtered
 plt.imshow(magnitude_spectrum_filtered, cmap='gray')
 plt.title('Magnitude Spectrum Filtered')
@@ -166,11 +184,11 @@ plt.show()
 
 """ Display Filter """
 # Display the 2D cosine or sine
-plt.imshow(h, cmap='gray')
+plt.imshow(H, cmap='gray')
 plt.title('Filter')
 plt.show()
 
-f = np.fft.fft2(h)
+f = np.fft.fft2(H)
 fshift = np.fft.fftshift(f)
 
 # Compute the magnitude spectrum
@@ -195,4 +213,3 @@ plt.plot(middle_col)
 plt.title('Middle Column of FFT Magnitude')
 plt.show()
 
-""" 2D FFTs """

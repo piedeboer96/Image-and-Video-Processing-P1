@@ -30,11 +30,11 @@ def build_2D_sine(img, amplitude, frequency):
 
 # Load the image
 img = cv2.imread('images/birdie.jpg', cv2.IMREAD_GRAYSCALE)
-X,Y, sine = build_2D_sine(img,amplitude=10,frequency=100)
+X,Y, sine = build_2D_sine(img,amplitude=10,frequency=2)
 
 # Display the 2D cosine or sine
-plt.imshow(sine, cmap='gray')
-plt.title('2D sine')
+plt.imshow(sine,cmap='gray')
+plt.title('Meshgrid Sine')
 plt.show()
 
 f = np.fft.fft2(sine)
@@ -55,11 +55,11 @@ middle_col = magnitude_spectrum[:,magnitude_spectrum.shape[1]//2]
 
 # Display the middle row and column
 plt.plot(middle_row)
-plt.title('Middle Row of FFT Magnitude')
+plt.title('Sinusoid Middle Row FFT Magnitude')
 plt.show()
 
 plt.plot(middle_col)
-plt.title('Middle Column of FFT Magnitude')
+plt.title('Sinusoid Middle Column of FFT Magnitude')
 plt.show()
 
 
