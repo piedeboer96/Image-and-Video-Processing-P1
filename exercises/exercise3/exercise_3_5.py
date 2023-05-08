@@ -126,6 +126,8 @@ g_250 = np.fft.ifft2(np.fft.ifftshift(G_250)).real
 
 # plt.show()
 
+
+
 """ 1D slices of noisy and filtered for different amplitudes """
 
 # magnitude spectra of noisy
@@ -164,8 +166,7 @@ middle_column_denoise_25 = ms_filtered25[:,ms_filtered25.shape[1]//2]
 # denoised 250
 middle_row_denoise_500 = ms_filtered500[ms_filtered500.shape[0]//2,:]
 middle_column_denoise_500 = ms_filtered500[:,ms_filtered500.shape[1]//2]
-
-# provide 4 plots containing the following subplots 
+ 
 #   plot 1:  magnitude spectra 2D noisy amplitude=25 and amplitude=250
 #   plot 2:  magnitude spectra 2D filterd/denoised amplitude=25 and amplitude=250
 #   plot 3:  1d slices of noisy , amplitude=25 and amplitude=250
@@ -209,3 +210,4 @@ plt.title('1D middle row denoise (high)')
 plt.plot(middle_row_denoise_500)
 plt.tight_layout()
 plt.show()
+

@@ -23,7 +23,8 @@ sobel_kernel = np.array([[-1, -2, -1],[0,0,0],[1,2,1]])
 
 # using the follow approach we can obtain a cartoony image
 #   1. apply edge detection (sobel or canny) to first copy 
-#   2. apply clustering (k-menas) to a second copy
+#   2. take the 'negative' of this edge image
+#   2. apply clustering (k-means) to the second copy
 #   3. overlay the images (= cartoonified)
 
 img = cv2.imread('images/sheep.jpg')
@@ -47,7 +48,6 @@ img_cartoon = np.bitwise_and(img_sobel_neg, img_k_means)
 img_cartoon_hsv = cv2.cvtColor(img_cartoon, cv2.COLOR_RGB2HSV)
 img_cartoon_hsv[:,:,1] = np.clip(img_cartoon_hsv[:,:,1] * 1.5, 0, 255)
 img_cartoon = cv2.cvtColor(img_cartoon_hsv, cv2.COLOR_HSV2RGB)
-
 
 # display all 3 images
 plt.subplot(221), plt.imshow(img_sobel), plt.title('Sobel Filter')

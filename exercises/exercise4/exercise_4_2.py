@@ -30,7 +30,7 @@ def polar_coordinate_transformation(x,y):
     rho_prime = math.sqrt(rho)
     return (rho_prime * math.cos(phi)), (rho_prime * math.sin(phi))  # fix here, swapped x and y
 
-
+# inverse mapping nearest neighbour
 def inverse_nearest_neighbour(img_rgb):
     
     rows, cols, channels = img_rgb.shape
@@ -54,9 +54,7 @@ def inverse_nearest_neighbour(img_rgb):
     
     return img_transformed
 
-"""
-    Demonstration
-"""
+""" Demonstration """
 
 # load image
 img = cv2.imread('images/palette.jpg')

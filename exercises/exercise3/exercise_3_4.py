@@ -38,23 +38,6 @@ def add_periodic_noise(img, amplitude, frequency):
     # now add the noise
     return np.add(img, sine2D)
 
-# ideal bandreject 
-def idealbandreject(n1, n2, freq1, freq2, visualize=False):
-    
-    k1, k2 = np.meshgrid(np.arange(-round(n2/2)+1, math.floor(n2/2)+1), np.arange(-round(n1/2)+1, math.floor(n1/2)+1))
-    d = np.sqrt(k1**2 + k2**2)
-    
-    # reject filter at frequencies between freq1 and freq2
-    reject = np.ones_like(d)
-    reject[(d > freq1) & (d < freq2)] = 0
-
-    h = reject
-
-    if visualize:
-        visualize_filter(h)
-
-    return h
-
 # butterworthnotch reject transfer function (Gonzalez, page 300)
 def H_NR(u, v, d0, n):
     M, N = u.shape[0], u.shape[1]
@@ -124,7 +107,7 @@ magnitude_spectrum_corrupt = np.abs(fshift2)
 magnitude_spectrum_corrupt = np.log(magnitude_spectrum_corrupt + 1)
 
 # filtered image and magnitude spectra
-radius=3; n=8
+radius=30; n=8
 H = H_NR(*np.meshgrid(np.arange(F_25.shape[0]), np.arange(F_25.shape[1]), indexing='ij'), d0=radius, n=n)
 
 f1 = np.fft.fftshift(np.fft.fft2(img_corrupt))
@@ -135,6 +118,9 @@ magnitude_spectrum_filtered = np.abs(fshift)
 magnitude_spectrum_filtered = np.log(magnitude_spectrum_filtered + 1) 
 
 filtered_img = np.fft.ifft2(np.fft.ifftshift(filtered)).real
+
+
+visualize_filter(H)
 
 """ 1D Slices """
 # noisy
