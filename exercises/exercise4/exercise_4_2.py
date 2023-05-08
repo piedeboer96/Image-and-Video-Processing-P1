@@ -54,8 +54,6 @@ def inverse_nearest_neighbour(img_rgb):
     
     return img_transformed
 
-
-
 """
     Demonstration
 """

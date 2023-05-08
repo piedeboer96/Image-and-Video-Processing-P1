@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 import math
 
 
-# TODO:
-#   try Canny edge-detection...
-#   fix the black outlines
-
 # book 10.5 - clustering is used for image/region segmentation
 
 # k-means code from the labs
@@ -26,7 +22,7 @@ def k_means(image, k):
 sobel_kernel = np.array([[-1, -2, -1],[0,0,0],[1,2,1]])
 
 # using the follow approach we can obtain a cartoony image
-#   1. apply edge detection (sobel) to first copy 
+#   1. apply edge detection (sobel or canny) to first copy 
 #   2. apply clustering (k-menas) to a second copy
 #   3. overlay the images (= cartoonified)
 
